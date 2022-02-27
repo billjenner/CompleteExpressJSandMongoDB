@@ -12,6 +12,7 @@ Good Material
 - or
 - npm install nodemon
 - npm run start -> nodemon app.js
+- npm install mongoose
 - npm install dotenv
 - npm install @hapi/joi@15.0.3
 - npm install bcrypt
