@@ -1,0 +1,31 @@
+{
+  "name": "udemy-completeexpressjsandmongodb",
+  "version": "1.0.0",
+  "description": "NodeExpressMongo",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js",
+    "start": "nodemon app.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^16.0.0",
+    "exppress": "^0.0.1-security",
+    "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.2.3",
+    "node.js": "^0.0.1-security",
+    "nodemon": "^2.0.15"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/billjenner/CompleteExpressJSandMongoDB.git"
+  },
+  "author": "Bill Jenner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/billjenner/CompleteExpressJSandMongoDB/issues"
+  },
+  "homepage": "https://github.com/billjenner/CompleteExpressJSandMongoDB#readme"
+}
