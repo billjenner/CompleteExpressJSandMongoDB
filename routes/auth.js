@@ -1,13 +1,13 @@
 const router = express.Router();
 
-const UserModel = require('../models/User');
+const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = reuiqre('jsonwebtoken');
 
 router.post('/login', async (req, res) => {
   // 1. verify email, 2. pass verification -> return response
 
-  const user = await UserModel.findOne({ email: req.body.email });
+  const user = await User.findOne({ email: req.body.email });
   if (!user) return res.send('invalid email!!!');
 
   const passVerification = await crypt.compare(req.body.main, user.password);
@@ -17,6 +17,7 @@ router.post('/login', async (req, res) => {
   res.send(token);
 
   // or
+
   user.password = undefined;
   res.json({
     body: {

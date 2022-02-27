@@ -2,12 +2,13 @@
   "name": "udemy-completeexpressjsandmongodb",
   "version": "1.0.0",
   "description": "NodeExpressMongo",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "test": "node app.js",
-    "start": "nodemon app.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
   "dependencies": {
+    "@hapi/joi": "^15.1.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^16.0.0",
     "exppress": "^0.0.1-security",
@@ -17,7 +18,9 @@
     "node.js": "^0.0.1-security",
     "nodemon": "^2.0.15"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/billjenner/CompleteExpressJSandMongoDB.git"

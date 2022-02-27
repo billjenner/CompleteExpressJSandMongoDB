@@ -17,3 +17,6 @@ Good Material
 - npm install @hapi/joi@15.0.3
 - npm install bcrypt
 - npm install jsonwebtoken
+
+
+> npm run start

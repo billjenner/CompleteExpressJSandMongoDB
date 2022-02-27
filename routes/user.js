@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const UserModel = require('../models/User');
+const User = require('../models/User');
 
 const Joi = require('@hapi/joi');
 const bcrypt = require('bcrypt');
@@ -16,34 +16,73 @@ const verifyToken = require('./verifyjwt');
 // 1. generate a salt -> random text
 // 2. has a password -> hash(1231331, salt)
 
+http: router.get('/test', async (req, res) => {
+  console.log('test');
+  res.send('caught test');
+});
+
 router.get('/token', (req, res) => {
   const token = jwt.sign({ _id: 'ds_123532523234' }, process.env.SECRET);
   res.send(token);
 });
 
+//localhost:3000/api/user/add
+// Example: C:\dev\Udemy-Mern-Stack-Front-To-Back\src\routes\api\users.js
 router.post('/add', async (req, res) => {
   const schema = {
-    name: Joi.string().min(5).required(),
-    email: Joi.string.min(5).email.required(),
-    password: Joi.string().min(6).required(),
+    name: Joi.string().required().min(4).max(256),
+    email: Joi.string().required().email().min(5),
+    password: Joi.string().required().min(6),
   };
 
-  const { error } = Joi.ValidationError(req.body, schema);
+  const { error } = Joi.validate(req.body, schema);
   if (error) return res.send(error.details[0].message);
 
-  const salt = await brycpt.genSalt(10);
+  try {
+    const { name, email, password } = req.body;
 
-  const hasPassword = await brycpt.hash(req.body.password, salt);
+    let user = await User.findOne({ email });
 
-  const user = new UserModel({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-  });
+    if (user) {
+      return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
+    }
+
+    user = new User({
+      name,
+      email,
+      password,
+    });
+
+    const salt = await bcrypt.genSalt(10);
+
+    user.password = await bcrypt.hash(password, salt);
+
+    await user.save();
+
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      process.env.SECRET,
+      { expiresIn: 8640000 },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+      }
+    );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send(err.message);
+  }
 });
 
-router.get('/all', verifyToken, async (req, res) => {
-  const users = await UserModel.find();
+//localhost:3000/api/user/all
+http: router.get('/all', verifyToken, async (req, res) => {
+  const users = await User.find();
 
   try {
     res.send(users);
@@ -56,6 +95,8 @@ router.get('/all', verifyToken, async (req, res) => {
 router.get('/user/:id', async (req, res) => {
   const id = req.params.id;
 
+  let user = await User.findOne({ _id: id });
+
   try {
     res.send(users);
   } catch (err) {
@@ -66,9 +107,7 @@ router.get('/user/:id', async (req, res) => {
 router.delete('/user/:id', async (req, res) => {
   const id = req.params.id;
 
-  const deletedUser = UserModel.remove({
-    _id: id,
-  });
+  const deletedUser = User.remove({ _id: id });
 
   try {
     res.send(deletedUser);
@@ -80,7 +119,7 @@ router.delete('/user/:id', async (req, res) => {
 router.patch('/user/:id', async (req, res) => {
   const id = req.params.id;
 
-  const update = await UserModel.update(
+  const update = await User.update(
     { _id: id },
     {
       $set: req.body,
@@ -95,11 +134,3 @@ router.patch('/user/:id', async (req, res) => {
 });
 
 module.exports = router;
-
-// POST localhost:3000/api/token
-// {
-//  "name": "Valead",
-//  "email":"asd123@gmail.com",
-//  "password":"asdasd12341"
-// }
-// Body > Headers > Pretty

@@ -7,16 +7,18 @@ const env = require('dotenv/config');
 app.use(express.json());
 
 const userRoutes = require('./routes/user');
-app.use('/api/', userRoutes);
+app.use('/api/user', userRoutes);
 
-app.listen('3000', () => {
-  console.log('Server is running!!!');
-});
-
+const db = process.env.DB || 'mongodb://localhost/testdb';
 mongoose
-  .connect(process.env.DB, {
+  .connect(db, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log('MongoDB Connected'))
+  .then(() => console.log(`MongoDB Connected at ${db}`))
   .catch((err) => console.log(err));
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server started and listening on ${port}`);
+});
